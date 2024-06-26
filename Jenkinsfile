@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage("Init") {
             steps {
-                nodejs(nodeJSInstallation: 'nodejs') {
+                nodejs(nodeJSInstallationName: 'nodejs') {
                     sh "npm --version"
                 }
             }
