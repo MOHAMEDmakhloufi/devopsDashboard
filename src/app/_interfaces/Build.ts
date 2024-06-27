@@ -3,6 +3,7 @@ export interface Build{
     name: string;
     status: string;
     startTimeMillis: number;
+    startDate?: Date;
     endTimeMillis: number;
     durationMillis: number;
     stages: Stage[];

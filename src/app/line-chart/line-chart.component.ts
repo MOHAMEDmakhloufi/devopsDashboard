@@ -83,6 +83,6 @@ export class LineChartComponent implements OnInit, OnDestroy {
   getData(){
     this.labels = this.data.map(build=> build.name).reverse()
     this.values = this.data.map(build=> build.durationMillis).reverse()
-    
+   
   }
 }

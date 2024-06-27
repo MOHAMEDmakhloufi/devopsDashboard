@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
   constructor(private jenkinsService: JenkinsService){}
 
   ngOnInit(): void {
-    initFlowbite();
+    
     this.jenkinsService.builds$().subscribe({
       next: (response)=> {
         this.builds= response;
@@ -36,6 +36,9 @@ export class AppComponent implements OnInit {
         this.selectedBuild = response[0]
         this.status = response[0]?.status;
         this.isPageLoading.next(false);
+        setTimeout(() => {
+          initFlowbite();
+        }, 100);
       },
       error: (e)=>{
         this.isPageLoading.next(false);
@@ -44,7 +47,17 @@ export class AppComponent implements OnInit {
     })
   }
 
-
+  getBuildLogs(buildId: number){
+    this.jenkinsService.buildLogs$(buildId).subscribe({
+      next: (response)=> {
+        //this.logs = response;
+      },
+      error: (e)=>{
+        this.isPageLoading.next(false);
+        alert(e);
+      }
+    })
+  }
 
   onSelectBuild(buildId){
     this.selectedBuild = this.builds.filter(b => b.id==buildId)[0];
