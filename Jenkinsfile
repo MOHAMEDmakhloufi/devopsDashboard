@@ -1,10 +1,14 @@
 pipeline {
     agent any
     stages {
-        stage("Init") {
+        stage("Sonarqube analysis ") {
             steps {
                 nodejs(nodeJSInstallationName: 'nodejs') {
-                    sh "npm --version"
+                    sh "npm install"
+                    withSonarQubeEnv(installationName:'sonarQube'){
+                        sh "npm install sonar-scanner"
+                        sh "npm run sonar"
+                    }
                 }
             }
         }
