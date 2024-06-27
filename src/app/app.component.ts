@@ -20,6 +20,9 @@ export class AppComponent implements OnInit {
   status : string = 'in_progress';
   builds: Build[];
   selectedBuild : Build;
+  logs: string;
+  private isLogsLoading = new BehaviorSubject<boolean>(true);
+  isLogsLoading$ = this.isLogsLoading.asObservable();
 
   buildsOptions: OptionObj[] = [];
   constructor(private jenkinsService: JenkinsService){}
@@ -41,19 +44,22 @@ export class AppComponent implements OnInit {
         }, 100);
       },
       error: (e)=>{
-        this.isPageLoading.next(false);
+       // this.isPageLoading.next(false);
         alert(e);
       }
     })
   }
 
-  getBuildLogs(buildId: number){
+  getBuildLogs(buildId: string){
+    this.isLogsLoading.next(true)
     this.jenkinsService.buildLogs$(buildId).subscribe({
       next: (response)=> {
-        //this.logs = response;
+        
+        this.logs = response;
+        this.isLogsLoading.next(false);
       },
       error: (e)=>{
-        this.isPageLoading.next(false);
+        console.log(e)
         alert(e);
       }
     })
@@ -85,10 +91,15 @@ export class AppComponent implements OnInit {
   }
 
   getLongerStage(){
-    
-    const maxItem= this.builds[0].stages.reduce((max, current)=>{
-      return current.durationMillis > max.durationMillis? current: max;
-    })
+    let maxItem;
+    if(this.builds[0].status!= 'in_progress')
+      maxItem= this.builds[0].stages.reduce((max, current)=>{
+        return current.durationMillis > max.durationMillis? current: max;
+      })
+    else
+      maxItem= this.builds[1].stages.reduce((max, current)=>{
+        return current.durationMillis > max.durationMillis? current: max;
+      })
     
     this.longerStage= {name: maxItem.name, value: maxItem.durationMillis}
     

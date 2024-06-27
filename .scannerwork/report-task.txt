@@ -1,0 +1,6 @@
+projectKey=devopsDashboard
+serverUrl=http://192.168.1.7:9000
+serverVersion=10.5.1.90531
+dashboardUrl=http://192.168.1.7:9000/dashboard?id=devopsDashboard
+ceTaskId=b25d7eec-6dfe-4883-90d2-3b5081cf1e1c
+ceTaskUrl=http://192.168.1.7:9000/api/ce/task?id=b25d7eec-6dfe-4883-90d2-3b5081cf1e1c

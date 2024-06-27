@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, delay, map, tap } from 'rxjs';
 import { Build } from '../_interfaces/Build';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Pipeline } from '../_interfaces/Pipeline';
@@ -8,7 +8,7 @@ import { Pipeline } from '../_interfaces/Pipeline';
   providedIn: 'root'
 })
 export class JenkinsService {
-  jenkinsUrl = "http://192.168.1.23:8080";
+  jenkinsUrl = "http://192.168.1.7:8080";
   username = "mohamed_makhloufi";
   apiToken = "11a138f688794ae1e51fdfb3bd2db99850";
   constructor(
@@ -29,19 +29,20 @@ export class JenkinsService {
           });
           return response
         }),
-        tap(console.log)
+        tap(console.log),
+        delay(1000)
       );
   }
 
-  buildLogs$(id) : Observable<string>{
-    const headers = new HttpHeaders({
-      'Authorization': 'Basic ' + this.encodeCredentials(this.username, this.apiToken)
-    });
-    return this.http.get<string>(`/jenkins/job/DASHBOARD-PIPELINE/${id}/logText/progressiveText/api/json`, {headers})
-    .pipe(
-        tap(console.log)
-      );
-  }
+    buildLogs$(id) : Observable<string>{
+      const headers = new HttpHeaders({
+        'Authorization': 'Basic ' + this.encodeCredentials(this.username, this.apiToken),
+      });
+      return this.http.get<string>(`/jenkins/job/DASHBOARD-PIPELINE/${id}/logText/progressiveText/api/json`, {headers, responseType: 'text' as 'json'})
+      .pipe(
+          tap(console.log)
+        );
+    }
   
 
   encodeCredentials(username: string, password: string): string {
