@@ -19,11 +19,8 @@ pipeline {
         stage("Selenium Tests") {
               steps {
                 script {
-                    // Define the path to your virtual environment's Python interpreter
-                    def pythonHome = "myenv/bin/python"
                     
-                    // Run your Selenium tests using the virtual environment's Python
-                    sh "${pythonHome} seleniumTest.py"
+                    sh "python3 seleniumTest.py"
                 }
               }
           }
