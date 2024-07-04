@@ -16,6 +16,11 @@ pipeline {
               echo "hello sonar" 
             }
         }
+        stage("Selenium Tests") {
+              steps {
+                sh 'python3 --version'
+              }
+          }
         
       
 
