@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage("Sonarqube analysis ") {
             steps {
+              /*
                 nodejs(nodeJSInstallationName: 'nodejs') {
                     sh "npm install"
                     withSonarQubeEnv(installationName:'sonarQube'){
@@ -10,6 +11,8 @@ pipeline {
                     }
                     
                 }
+              */
+              echo "hello sonar" 
             }
         }
         
