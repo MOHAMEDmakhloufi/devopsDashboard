@@ -12,6 +12,7 @@ pipeline {
                     
                 }
               */
+              sh 'sleep 10'
               echo "hello sonar" 
             }
         }
