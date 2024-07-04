@@ -3,6 +3,7 @@ pipeline {
     stages {
         stage("Sonarqube analysis ") {
             steps {
+              /*
                 nodejs(nodeJSInstallationName: 'nodejs') {
                     sh "npm install"
                     withSonarQubeEnv(installationName:'sonarQube'){
@@ -10,8 +11,16 @@ pipeline {
                     }
                     
                 }
+              */
+              sh 'sleep 10'
+              echo "hello sonar" 
             }
         }
+        stage("Selenium Tests") {
+              steps {
+                sh 'python3 --version'
+              }
+          }
         
       
 
