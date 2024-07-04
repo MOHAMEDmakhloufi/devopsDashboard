@@ -18,7 +18,7 @@ pipeline {
         }
         stage("Selenium Tests") {
               steps {
-                sh 'python3 --version'
+                sh 'python3 seleniumTest.py'
               }
           }
         
