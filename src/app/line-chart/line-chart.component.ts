@@ -82,7 +82,15 @@ export class LineChartComponent implements OnInit, OnDestroy {
 
   getData(){
     this.labels = this.data.map(build=> build.name).reverse()
-    this.values = this.data.map(build=> build.durationMillis).reverse()
+    this.values = this.data.map(build=> build.durationMillis).reverse();
+    if (this.values.length < 3) {
+      return;
+    }
+    
+    const min = Math.min(...this.values);
+    const max = Math.max(...this.values);
+    if(max!=min)
+      this.values = this.values.map(value => (value - min) / (max - min));
    
   }
 }

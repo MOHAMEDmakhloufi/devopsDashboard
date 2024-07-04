@@ -13,6 +13,7 @@ import { LineChartComponent } from './line-chart/line-chart.component';
 import { FormsModule} from '@angular/forms';
 import { SelectComponent } from './select/select.component';
 import { StagesStepperComponent } from './stages-stepper/stages-stepper.component';
+import { SonarComponent } from './sonar/sonar.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { StagesStepperComponent } from './stages-stepper/stages-stepper.componen
     BoxChartComponent,
     LineChartComponent,
     SelectComponent,
-    StagesStepperComponent
+    StagesStepperComponent,
+    SonarComponent
   ],
   imports: [
     BrowserModule,

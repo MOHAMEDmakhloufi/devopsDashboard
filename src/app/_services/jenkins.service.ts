@@ -8,9 +8,8 @@ import { Pipeline } from '../_interfaces/Pipeline';
   providedIn: 'root'
 })
 export class JenkinsService {
-  jenkinsUrl = "http://192.168.1.7:8080";
   username = "mohamed_makhloufi";
-  apiToken = "11a138f688794ae1e51fdfb3bd2db99850";
+  apiToken = "11f1a2f71344ebe8f331dd8e30ae00f155";
   constructor(
     private http : HttpClient
   ) { }
@@ -29,7 +28,7 @@ export class JenkinsService {
           });
           return response
         }),
-        tap(console.log),
+        //tap(console.log),
         delay(1000)
       );
   }

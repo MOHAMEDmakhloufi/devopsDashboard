@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <ng-container *ngIf="!(isPageLoading$ | async); else pageLoadingBlock">
   <div class=" max-w-screen-lg mx-auto mt-16">
-
+    <!--Last Build-->
     <div class="p-5 mb-16 rounded-lg"
       [ngClass]="{'bg-green-300 dark:bg-green-900': status=='success', 'bg-red-300 dark:bg-red-900': status=='failed', 'bg-orange-300 dark:bg-orange-900': status=='unstable', 'bg-gray-300 dark:bg-gray-900': status=='aborted', 'bg-blue-300 dark:bg-blue-900': status=='in_progress'}">
       <div class="flex justify-between items-center">
@@ -80,7 +80,7 @@
         </app-box>
         <div class="flex justify-center col-span-full">
           <button type="button" (click)="getBuildLogs(builds[0]?.id)" data-modal-target="console-log-modal" data-modal-toggle="console-log-modal" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-            Console Log
+            consoles logs
           </button>
         </div>
         <app-box-chart title="Builds Status">
@@ -117,10 +117,11 @@
         </app-box-chart>
       </div>
   
+      <app-sonar></app-sonar>
     </div>
   
   
-  
+    <!--Build Details-->
     <div class="p-5 rounded-lg" *ngIf="selectedBuild"
     [ngClass]="{'bg-green-300 dark:bg-green-900': selectedBuild.status=='success', 'bg-red-300 dark:bg-red-900': selectedBuild.status=='failed', 'bg-orange-300 dark:bg-orange-900': selectedBuild.status=='unstable', 'bg-gray-300 dark:bg-gray-900': selectedBuild.status=='aborted', 'bg-blue-300 dark:bg-blue-900': selectedBuild.status=='in_progress'}">
       <div class="flex justify-between items-center">
@@ -129,7 +130,7 @@
             {{'build details' | uppercase}}
           </h3>
           <section>
-            <app-select [options]="buildsOptions" (onSelectBuild)="onSelectBuild($event)"></app-select>
+            <app-select [options]="buildsOptions" [selectedValue]="selectedValue" (onSelectBuild)="onSelectBuild($event)"></app-select>
           </section>
         </div>
         <p class="text-gray-900 dark:text-white">{{ selectedBuild.startDate| date: 'medium' }}</p>
@@ -207,10 +208,10 @@
 
       <div class="mt-8 w-full flex justify-center">
         <button type="button" (click)="getBuildLogs(selectedBuild.id)" data-modal-target="console-log-modal" data-modal-toggle="console-log-modal" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-          Console Log
+          consoles logs
         </button>
-        <div id="console-log-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-          <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <div id="console-log-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+          <div class="relative p-4 w-full max-w-4xl ">
               <!-- Modal content -->
               <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                   <!-- Modal header -->
@@ -226,10 +227,10 @@
                       </button>
                   </div>
                   <!-- Modal body -->
-                  <div class="p-4 md:p-5 space-y-4" >
-                      <p *ngIf="!(isLogsLoading$ | async); else pageLoadingBlock" class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                  <div class="p-4 md:p-5 space-y-4 max-h-[calc(75vh)] overflow-auto custom-scrollbar" >
+                      <pre *ngIf="!(isLogsLoading$ | async); else pageLoadingBlock" class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
                           {{logs}}
-                      </p>
+                      </pre>
                       
                   </div>
                   <!-- Modal footer -->
@@ -266,12 +267,3 @@
 </ng-template>
 
 
-
-
-
-<!-- 
-withSonarQubeEnv(installationName:'sonarQube'){
-                        sh "npm install sonar-scanner"
-                        sh "npm run sonar"
-                    }
--->

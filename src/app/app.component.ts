@@ -15,8 +15,8 @@ import { BehaviorSubject } from 'rxjs';
 export class AppComponent implements OnInit {
   private isPageLoading = new BehaviorSubject<boolean>(true);
   isPageLoading$ = this.isPageLoading.asObservable();
-  difficultStage: Object;
-  longerStage: Object;
+  difficultStage: Object= {name: "nothing", value: 0};
+  longerStage: Object = {name: "nothing", value: 0};
   status : string = 'in_progress';
   builds: Build[];
   selectedBuild : Build;
@@ -25,23 +25,30 @@ export class AppComponent implements OnInit {
   isLogsLoading$ = this.isLogsLoading.asObservable();
 
   buildsOptions: OptionObj[] = [];
+  selectedValue: string;
+
   constructor(private jenkinsService: JenkinsService){}
 
   ngOnInit(): void {
     
     this.jenkinsService.builds$().subscribe({
       next: (response)=> {
-        this.builds= response;
-        console.log(this.builds.length)
-        this.getDifficultStage();
-        this.getLongerStage();
-        this.getBuildsOptions();
-        this.selectedBuild = response[0]
-        this.status = response[0]?.status;
-        this.isPageLoading.next(false);
-        setTimeout(() => {
-          initFlowbite();
-        }, 100);
+        if(response.length){
+          this.builds= response;
+          
+          this.getDifficultStage();
+          this.getLongerStage();
+          this.getBuildsOptions();
+          this.selectedBuild = response[0]
+          this.status = response[0]?.status;
+          this.isPageLoading.next(false);
+          setTimeout(() => {
+            initFlowbite();
+          }, 100);
+        }else{
+          alert("There aren't any build !")
+        }
+        //setInterval(()=>{this.changeDetection()}, 5000)
       },
       error: (e)=>{
        // this.isPageLoading.next(false);
@@ -49,7 +56,37 @@ export class AppComponent implements OnInit {
       }
     })
   }
-
+  changeDetection(){
+    this.jenkinsService.builds$().subscribe({
+      next: (response)=> {
+        let isChange= false;
+        if(response.length){
+          if(!this.builds){
+            isChange = true
+          }else if(response[0].name != this.builds[0].name || response[0].status != this.status || response[0].stages.length != this.builds[0].stages.length){
+            isChange = true
+          }
+        }
+        //console.log(isChange)
+        if(isChange){
+          
+          this.isPageLoading.next(true);
+          this.builds= response;
+          this.getDifficultStage();
+          this.getLongerStage();
+          this.getBuildsOptions();
+          this.selectedBuild = response[0]
+          this.status = response[0]?.status;
+          this.isPageLoading.next(false);
+          setTimeout(() => {
+            initFlowbite();
+          }, 100);
+        }
+       //setInterval(()=>{console.log("hi")}, 1000)
+      },
+    })
+  }
+ 
   getBuildLogs(buildId: string){
     this.isLogsLoading.next(true)
     this.jenkinsService.buildLogs$(buildId).subscribe({
@@ -70,10 +107,12 @@ export class AppComponent implements OnInit {
   }
 
   getBuildsOptions(){
+    this.buildsOptions.splice(0, this.buildsOptions.length)
     this.builds.forEach(b=> {
       
       this.buildsOptions.push({ value: b.id, label: b.name })
     })
+    this.selectedValue = this.buildsOptions[0].value
     
   }
   getDifficultStage(){
@@ -83,25 +122,29 @@ export class AppComponent implements OnInit {
         failedStageCount[stage.name]?failedStageCount[stage.name]+=1: failedStageCount[stage.name]=1;
 
     }))
-    const maxEntry = Object.entries(failedStageCount).reduce((max, entry) => {
-      return entry[1] > max[1] ? entry : max;
-    });
-    this.difficultStage= {name: maxEntry[0], value: maxEntry[1]}
+    const entries = Object.entries(failedStageCount)
+    let maxEntry;
+    if (entries.length){
+      maxEntry = entries.reduce((max, entry) => {
+        return entry[1] > max[1] ? entry : max;
+      });
+      this.difficultStage= {name: maxEntry[0], value: maxEntry[1]}
+    }
+    
     
   }
 
   getLongerStage(){
     let maxItem;
-    if(this.builds[0].status!= 'in_progress')
-      maxItem= this.builds[0].stages.reduce((max, current)=>{
+    const stages = this.builds[0].stages;
+    if(stages.length){
+      maxItem= stages.reduce((max, current)=>{
         return current.durationMillis > max.durationMillis? current: max;
       })
-    else
-      maxItem= this.builds[1].stages.reduce((max, current)=>{
-        return current.durationMillis > max.durationMillis? current: max;
-      })
+      this.longerStage= {name: maxItem.name, value: maxItem.durationMillis}
+    }
     
-    this.longerStage= {name: maxItem.name, value: maxItem.durationMillis}
+    
     
   }
 }
