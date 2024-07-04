@@ -18,6 +18,7 @@ pipeline {
         }
         stage("Selenium Tests") {
               steps {
+                sh 'source myenv/bin/activate'
                 sh 'python3 seleniumTest.py'
               }
           }
