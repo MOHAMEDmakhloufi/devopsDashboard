@@ -1,18 +1,32 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.service import Service as ChromiumService
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.os_manager import ChromeType
+
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-
+import sys
 
 class Monitoring(webdriver.Chrome):
     def __init__(self, BASE_URL, teardown=False):
         self.BASE_URL = BASE_URL
         self.teardown = teardown
         options = webdriver.ChromeOptions()
-        options.add_experimental_option('excludeSwitches', ['enable-logging'])
-        options.add_experimental_option("detach", True)
-        super(Monitoring, self).__init__(options=options)
+        if len(sys.argv) >= 2:
+            options.add_argument('--headless')  # Run Chrome in headless mode
+            options.add_argument('--no-sandbox')  # Bypass OS security model
+            options.add_argument('--disable-dev-shm-usage')  # Overcome limited resource problems
+            self.teardown = True
+            super(Monitoring, self).__init__(
+                service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()),
+                options=options)
+        else :
+            options.add_experimental_option('excludeSwitches', ['enable-logging'])
+            options.add_experimental_option("detach", True)
+            super(Monitoring, self).__init__(options=options)
+            self.maximize_window()
         self.implicitly_wait(6)
-        self.maximize_window()
+
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.teardown:
@@ -40,7 +54,7 @@ class Monitoring(webdriver.Chrome):
             print(f"An error occurred: {e}")
 
 if __name__ == '__main__':
-    with Monitoring("https://flowbite.com/docs/forms/input-field/", True) as m:
+    with Monitoring("https://www.python.org/", True) as m:
         m.land_first_page()
-        #is_general_section_exist = m.is_element_exist(value='div.p-5.mb-16.rounded-lg')
+        is_general_section_exist = m.is_element_exist(value='div.p-5.mb-16.rounded-lg')
         #m.scroll_to_and_click_select()
