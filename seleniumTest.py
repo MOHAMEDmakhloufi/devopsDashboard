@@ -58,3 +58,4 @@ if __name__ == '__main__':
         m.land_first_page()
         is_general_section_exist = m.is_element_exist(value='div.p-5.mb-16.rounded-lg')
         #m.scroll_to_and_click_select()
+        print(f'Test 1 : The Test With Name <is general section exist> was { "Passed" if is_general_section_exist else "Failed" }')
