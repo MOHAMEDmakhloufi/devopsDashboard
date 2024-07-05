@@ -22,7 +22,7 @@ pipeline {
                   sh 'python3 -m venv myenv'
                   sh '. myenv/bin/activate'
                   sh 'myenv/bin/pip install webdriver-manager selenium'
-                  sh 'myenv/bin/python seleniumTest.py chromium'
+                  sh 'myenv/bin/python test.py'
                   sh 'rm -rf myenv'
                 }
               }
