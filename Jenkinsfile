@@ -12,7 +12,7 @@ pipeline {
                     
                 }
               */
-              sh 'sleep 10'
+              
               echo "hello sonar" 
             }
         }
@@ -20,7 +20,10 @@ pipeline {
               steps {
                 script {
                     
-                    sh "python3 seleniumTest.py"
+                  sh 'python3 -m venv myenv'
+                  sh 'source myenv/bin/activate'
+                  sh 'pip install webdriver-manager'
+                  sh 'rm -rf myenv'
                 }
               }
           }
