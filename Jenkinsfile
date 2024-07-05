@@ -21,7 +21,7 @@ pipeline {
                 script {
                     
                   sh 'python3 -m venv myenv'
-                  sh 'source myenv/bin/activate'
+                  sh '. myenv/bin/activate'
                   sh 'pip install webdriver-manager'
                   sh 'rm -rf myenv'
                 }
