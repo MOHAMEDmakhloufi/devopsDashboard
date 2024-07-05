@@ -19,8 +19,10 @@ pipeline {
         stage("Selenium Tests") {
               steps {
                 script {
-                  #!/bin/bash 
-                  echo "helo selenium"
+                  sh 'python3 -m venv myenv'
+                  sh '. myenv/bin/activate'
+                  sh 'myenv/bin/pip install webdriver-manager selenium'
+                  sh 'rm -rf myenv'
                 }
               }
           }
