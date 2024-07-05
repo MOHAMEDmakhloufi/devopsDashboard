@@ -19,12 +19,8 @@ pipeline {
         stage("Selenium Tests") {
               steps {
                 script {
-                  sh '''
-                    #!/bin/bash
-
-                    source
-                    '''  
-                  
+                  #!/bin/bash 
+                  echo "helo selenium"
                 }
               }
           }
