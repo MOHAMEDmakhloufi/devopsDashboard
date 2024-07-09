@@ -22,6 +22,7 @@ pipeline {
         stage("Build Docker Image") {
               steps {
                 script {
+                  
                   sh "docker build -t devops_dashboard:latest ."
                 }
               }
@@ -29,14 +30,14 @@ pipeline {
       stage("Deploy To Pre-Prod") {
               steps {
                 script {
-                  echo "hello Pre-Prod"
+                  sh "docker run -d --name devops_dashboard --network dashboard_network -p 4200:8080 devops_dashboard:latest"
                 }
               }
           }
         stage("Selenium Tests") {
               steps {
                 script {
-                  echo "hello selenium"
+                  sh "docker run --network dashboard_network --rm -v integration_tests:/usr/app/  selenium-test python seleniumTest.py chrome"
                 }
               }
           }
@@ -49,6 +50,17 @@ pipeline {
               steps {
                 script {
                   echo "hello Deploy to Prod"
+                }
+              }
+          }
+
+        stage("Cleaning Up ...") {
+                
+              steps {
+                script {
+                  sh "docker rmi devops_dashboard:latest"
+                  sh "docker stop devops_dashboard"
+                  sh "docker rmi devops_dashboard"
                 }
               }
           }
