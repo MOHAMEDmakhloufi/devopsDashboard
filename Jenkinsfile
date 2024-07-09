@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-      booleanParam(name: 'deployToProd', defaultValue: false, description : '')
+      booleanParam(name: 'DeployToProd', defaultValue: false, description : 'Do you want to deploy this app to production?')
     }
     stages {
         stage("Sonarqube analysis ") {
@@ -43,7 +43,7 @@ pipeline {
         stage("Deploy To Prod") {
                 when {
                   expression {
-                    params.deployToProd == true
+                    params.DeployToProd == true
                   }
                 }
               steps {
