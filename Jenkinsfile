@@ -48,7 +48,7 @@ pipeline {
                 }
               steps {
                 script {
-                  echo "hello Prod"
+                  echo "hello Deploy to Prod"
                 }
               }
           }
