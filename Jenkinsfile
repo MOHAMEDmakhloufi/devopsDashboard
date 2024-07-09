@@ -22,7 +22,7 @@ pipeline {
         stage("Build Docker Image") {
               steps {
                 script {
-                  echo "hello Docker"
+                  sh "docker build -t devops_dashboard:latest ."
                 }
               }
           }
