@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-      booleanParam(name: 'deployToProd", defaultValue: false, description : '')
+      booleanParam(name: 'deployToProd', defaultValue: false, description : '')
     }
     stages {
         stage("Sonarqube analysis ") {
