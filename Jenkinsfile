@@ -16,18 +16,34 @@ pipeline {
               echo "hello sonar" 
             }
         }
-        stage("Selenium Tests") {
+        stage("Build Docker Image") {
               steps {
                 script {
-                  sh 'python3 -m venv myenv'
-                  sh '. myenv/bin/activate'
-                  sh 'myenv/bin/pip install webdriver-manager selenium'
-                  sh 'sudo ls /root'
-                  sh 'rm -rf myenv'
+                  echo "hello Docker"
                 }
               }
           }
-        
+      stage("Deploy To Pre-Prod") {
+              steps {
+                script {
+                  echo "hello Pre-Prod"
+                }
+              }
+          }
+        stage("Selenium Tests") {
+              steps {
+                script {
+                  echo "hello selenium"
+                }
+              }
+          }
+        stage("Deploy To Prod") {
+              steps {
+                script {
+                  echo "hello Prod"
+                }
+              }
+          }
       
 
     }
