@@ -41,12 +41,12 @@ pipeline {
               }
           }
         stage("Deploy To Prod") {
-              steps {
                 when {
                   expression {
                     params.deployToProd == true
                   }
                 }
+              steps {
                 script {
                   echo "hello Prod"
                 }
