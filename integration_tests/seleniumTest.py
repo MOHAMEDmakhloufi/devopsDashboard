@@ -13,13 +13,20 @@ class Monitoring(webdriver.Chrome):
         self.teardown = teardown
         options = webdriver.ChromeOptions()
         if len(sys.argv) >= 2:
+
             options.add_argument('--headless')  # Run Chrome in headless mode
             options.add_argument('--no-sandbox')  # Bypass OS security model
             options.add_argument('--disable-dev-shm-usage')  # Overcome limited resource problems
+            options.add_argument('--disable-gpu')
+            options.add_argument('--disable-extensions')
+            options.add_argument('--disable-infobars')
+            options.add_argument('--start-maximized')
+            options.add_argument('--window-size=1920,1080')
             self.teardown = True
             super(Monitoring, self).__init__(
-                service=ChromiumService(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()),
-                options=options)
+                service=ChromiumService(ChromeDriverManager().install()),
+                options=options)  # Overcome limited resource problems
+
         else :
             options.add_experimental_option('excludeSwitches', ['enable-logging'])
             options.add_experimental_option("detach", True)
@@ -53,9 +60,23 @@ class Monitoring(webdriver.Chrome):
         except Exception as e:
             print(f"An error occurred: {e}")
 
+def display_test_cases(test_cases ):
+    count_passed_tests = len(list(filter(lambda test_case: test_case["status"], test_cases)))
+    count_failed_tests = len(test_cases) - count_passed_tests
+    print(f'Total Tests : {len(test_cases)}')
+    print(f'Total Passed Tests : {count_passed_tests}')
+    print(f'Total Failed Tests : {count_failed_tests}')
+    for ind, test in enumerate(test_cases):
+        print(f'Test {ind+1} : { "Passed" if test["status"] else "Failed" } <{test["test"]}>')
+
 if __name__ == '__main__':
-    with Monitoring("https://www.python.org/", True) as m:
+    with Monitoring("http://devops_dashboard:4200/" if len(sys.argv) >= 2 else"http://localhost:4200/", True) as m:
+        testCases = []
         m.land_first_page()
-        is_general_section_exist = m.is_element_exist(value='div.p-5.mb-16.rounded-lg')
+        is_general_section_exist = m.is_element_exist(By.ID,value='GENERAL_INFORMATION')
+        testCases.append({'status': is_general_section_exist, 'test': 'is general section exist'})
+        is_builds_details_exist = m.is_element_exist(By.ID, value='Builds_Details')
+        testCases.append({'status': is_builds_details_exist, 'test': 'is builds details exist'})
         #m.scroll_to_and_click_select()
-        print(f'Test 1 : The Test With Name <is general section exist> was { "Passed" if is_general_section_exist else "Failed" }')
+        display_test_cases(testCases)
+

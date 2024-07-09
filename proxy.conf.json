@@ -1,6 +1,6 @@
 {
     "/jenkins": {
-      "target": "http://192.168.1.18:8080",
+      "target": "http://192.168.1.19:8080",
       "secure": false,
       "changeOrigin": true,
       "pathRewrite": {
@@ -8,7 +8,7 @@
       }
     },
     "/sonar": {
-      "target": "http://192.168.1.18:9000",
+      "target": "http://192.168.1.19:9000",
       "secure": false,
       "changeOrigin": true,
       "pathRewrite": {
