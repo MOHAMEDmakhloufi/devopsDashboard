@@ -37,7 +37,7 @@ pipeline {
         stage("Selenium Tests") {
               steps {
                 script {
-                  sh "docker run --network dashboard_network --rm -v integration_tests:/usr/app/  selenium-test python seleniumTest.py chrome"
+                  sh "docker run --network dashboard_network --rm -v ${WORKSPACE}/integration_tests:/usr/app selenium-test python /usr/app/seleniumTest.py chrome"
                 }
               }
           }
@@ -60,7 +60,7 @@ pipeline {
                 script {
                   sh "docker rmi devops_dashboard:latest"
                   sh "docker stop devops_dashboard"
-                  sh "docker rmi devops_dashboard"
+                  sh "docker rm devops_dashboard"
                 }
               }
           }
