@@ -37,7 +37,10 @@ pipeline {
         stage("Selenium Tests") {
               steps {
                 script {
-                  sh "docker run --network dashboard_network --rm -v ${WORKSPACE}/integration_tests:/usr/app selenium-test python /usr/app/seleniumTest.py chrome"
+                  sh "docker run --network dashboard_network --rm -d --name selenium-test-container selenium-test sleep infinity"
+                  sh "docker cp ${WORKSPACE}/integration_tests/seleniumTest.py selenium-test-container:/usr/app/seleniumTest.py"
+                  sh "docker exec selenium-test-container python /usr/app/seleniumTest.py chrome"
+                  sh "docker stop selenium-test-container"
                 }
               }
           }
