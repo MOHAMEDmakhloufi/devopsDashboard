@@ -14,6 +14,7 @@ import { FormsModule} from '@angular/forms';
 import { SelectComponent } from './select/select.component';
 import { StagesStepperComponent } from './stages-stepper/stages-stepper.component';
 import { SonarComponent } from './sonar/sonar.component';
+import { SeleniumComponent } from './selenium/selenium.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { SonarComponent } from './sonar/sonar.component';
     LineChartComponent,
     SelectComponent,
     StagesStepperComponent,
-    SonarComponent
+    SonarComponent,
+    SeleniumComponent
   ],
   imports: [
     BrowserModule,

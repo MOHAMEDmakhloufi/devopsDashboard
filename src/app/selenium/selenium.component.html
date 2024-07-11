@@ -1,0 +1,48 @@
+<div class="flex space-x-6 items-center mt-12">
+    <img [src]="'assets/images/selenium.png'"  class="h-12 " alt="">
+    <span class="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white">Selenium</span>
+</div>
+<ng-container *ngIf="seleniumTest; else emptyBlock">
+    <div class="grid grid-cols-1 md:grid-cols-2  gap-4 md:gap-y-8 md:gap-x-16 ">
+        
+        <app-box [title]="'Test Status'" >
+            <p class="text-2xl font-semibold tracking-tight "
+                [ngClass]="{'text-green-500 dark:text-green-400': seleniumTest.status, 'text-red-500 dark:text-red-400': !seleniumTest.status}" >{{seleniumTest.status?'Passed': 'Failed'}}</p>
+        </app-box>  
+        
+        <app-box [title]="'Total Tests'" >
+            <p class="text-2xl font-semibold tracking-tight text-gray-700 dark:text-gray-400" >
+                {{seleniumTest.totalPassedTest + seleniumTest.totalFailedTest }}</p>
+        </app-box>
+        <app-box [title]="'Total Passed Tests'" >
+            <p class="text-2xl font-semibold tracking-tight text-green-500 dark:text-green-400" >
+                {{seleniumTest.totalPassedTest }}</p>
+        </app-box>
+
+        <app-box [title]="'Total Failed Tests'" >
+            <p class="text-2xl font-semibold tracking-tight text-red-500 dark:text-red-400" >
+                {{seleniumTest.totalFailedTest }}</p>
+        </app-box>
+
+        <app-box [title]="'Test Case'" >
+            <div>
+                <p *ngFor="let test of seleniumTest.testCase; let i = index"
+                [ngClass]="{'text-green-500 dark:text-green-400': test.status, 'text-red-500 dark:text-red-400': !test.status}"
+                    class="text-2xl font-semibold tracking-tight " >
+                    {{'Test '+i +' : ' + test.status + ' ' + test.test}} </p>
+            </div>
+        </app-box>
+    </div>
+</ng-container>
+
+
+
+
+<ng-template #emptyBlock>
+    
+    <div class="h-96 flex items-center justify-center">
+        <p class="text-2xl font-semibold tracking-tight text-gray-700 dark:text-gray-400" >
+            Selenium Test was skipped or not executed</p>
+    </div>
+  
+  </ng-template>

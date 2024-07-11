@@ -171,7 +171,6 @@ export class AppComponent implements OnInit {
     const lines = log.trim().split('\n');
     const totalTestsLine = lines.find(line => line.startsWith('Total Selenium Tests :'));
     if (!totalTestsLine) {
-        console.error('Failed to parse Jenkins log: Total Tests line not found.');
         return null;
     }
     
@@ -179,7 +178,6 @@ export class AppComponent implements OnInit {
 
     const passedTestsLine = lines.find(line => line.startsWith('Total Selenium Passed Tests :'));
     if (!passedTestsLine) {
-        console.error('Failed to parse Jenkins log: Total Passed Tests line not found.');
         return null;
     }
     const countPassedTests = parseInt(passedTestsLine.split(':')[1].trim());
@@ -188,7 +186,6 @@ export class AppComponent implements OnInit {
     seleniumTest.status = !testStatus
     const failedTestsLine = lines.find(line => line.startsWith('Total Selenium Failed Tests :'));
     if (!failedTestsLine) {
-        console.error('Failed to parse Jenkins log: Total Failed Tests line not found.');
         return null;
     }
     const countFailedTests = parseInt(failedTestsLine.split(':')[1].trim());
