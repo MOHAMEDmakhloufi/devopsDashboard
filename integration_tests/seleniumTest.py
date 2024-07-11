@@ -42,6 +42,7 @@ class Monitoring(webdriver.Chrome):
     def land_first_page(self):
         self.get(self.BASE_URL)
 
+
     def is_element_exist(self, by=By.CSS_SELECTOR, value=''):
         try:
             self.find_element(by, value)
@@ -63,14 +64,16 @@ class Monitoring(webdriver.Chrome):
 def display_test_cases(test_cases ):
     count_passed_tests = len(list(filter(lambda test_case: test_case["status"], test_cases)))
     count_failed_tests = len(test_cases) - count_passed_tests
-    print(f'Total Tests : {len(test_cases)}')
-    print(f'Total Passed Tests : {count_passed_tests}')
-    print(f'Total Failed Tests : {count_failed_tests}')
+    print(f'Total Selenium Tests : {len(test_cases)}')
+    print(f'Total Selenium Passed Tests : {count_passed_tests}')
+    print(f'Total Selenium Failed Tests : {count_failed_tests}')
     for ind, test in enumerate(test_cases):
-        print(f'Test {ind+1} : { "Passed" if test["status"] else "Failed" } <{test["test"]}>')
+        print(f'Test Selenium {ind+1} : { "Passed" if test["status"] else "Failed" } <{test["test"]}>')
+    if count_failed_tests :
+        raise Exception('Selenium Test Stage Was Failed')
 
 if __name__ == '__main__':
-    with Monitoring("http://devops_dashboard" if len(sys.argv) >= 2 else"http://localhost:4200/", True) as m:
+    with Monitoring("http://devops_dashboard/" if len(sys.argv) >= 2 else"http://localhost:4200/", True) as m:
         testCases = []
         m.land_first_page()
         is_general_section_exist = m.is_element_exist(By.ID,value='GENERAL_INFORMATION')
