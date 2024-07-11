@@ -30,7 +30,7 @@ pipeline {
       stage("Deploy To Pre-Prod") {
               steps {
                 script {
-                  sh "docker run -d --name devops_dashboard --network dashboard_network -p 4200:8080 devops_dashboard:latest"
+                  sh "docker run -d --name devops_dashboard --network dashboard_network -p 8080:8080 devops_dashboard:latest"
                 }
               }
           }
