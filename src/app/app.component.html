@@ -1,1 +1,269 @@
-<h1>hello world</h1>
+<app-navbar></app-navbar>
+<ng-container *ngIf="!(isPageLoading$ | async); else pageLoadingBlock">
+  <div class=" max-w-screen-lg mx-auto mt-16">
+    <!--Last Build-->
+    <div id="GENERAL_INFORMATION" class="p-5 mb-16 rounded-lg"
+      [ngClass]="{'bg-green-300 dark:bg-green-900': status=='success', 'bg-red-300 dark:bg-red-900': status=='failed', 'bg-orange-300 dark:bg-orange-900': status=='unstable', 'bg-gray-300 dark:bg-gray-900': status=='aborted', 'bg-blue-300 dark:bg-blue-900': status=='in_progress'}">
+      <div class="flex justify-between items-center">
+        <h3 class="my-12 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          {{'general information' | uppercase}}
+        </h3>
+        <p class="text-gray-900 dark:text-white">{{ builds[0].startDate| date: 'medium' }}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-y-8 md:gap-x-16 ">
+  
+        <app-box title="Pipeline Status">
+          <p class="text-2xl font-semibold tracking-tight"
+          [ngClass]="{'text-green-500 dark:text-green-400': status=='success', 'text-red-500 dark:text-red-400': status=='failed', 'text-orange-500 dark:text-orange-400': status=='unstable', 'text-gray-500 dark:text-gray-400': status=='aborted', 'text-blue-500 dark:text-blue-400': status=='in_progress'}">
+            {{status | uppercase}}
+          </p>
+          <ng-container [ngSwitch]="status">
+            <ng-container *ngSwitchCase="'success'">
+              <svg class="w-8 h-8 text-green-500 dark:text-green-400" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M1 5.917 5.724 10.5 15 1.5" />
+              </svg>
+            </ng-container>
+  
+            <ng-container *ngSwitchCase="'failed'">
+              <svg class="w-8 h-8 text-red-500 dark:text-red-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 5 9 4V3m5 2 1-1V3m-3 6v11m0-11a5 5 0 0 1 5 5m-5-5a5 5 0 0 0-5 5m5-5a4.959 4.959 0 0 1 2.973 1H15V8a3 3 0 0 0-6 0v2h.027A4.959 4.959 0 0 1 12 9Zm-5 5H5m2 0v2a5 5 0 0 0 10 0v-2m2.025 0H17m-9.975 4H6a1 1 0 0 0-1 1v2m12-3h1.025a1 1 0 0 1 1 1v2M16 11h1a1 1 0 0 0 1-1V8m-9.975 3H7a1 1 0 0 1-1-1V8" />
+              </svg>
+            </ng-container>
+  
+            <ng-container *ngSwitchCase="'unstable'">
+              <svg class="w-8 h-8 text-orange-500 dark:text-orange-400" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </ng-container>
+            <ng-container *ngSwitchCase="'aborted'">
+              <svg class="w-8 h-8 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                  d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </ng-container>
+  
+            <ng-container *ngSwitchCase="'in_progress'">
+              <div role="status">
+                <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                  viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor" />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentFill" />
+                </svg>
+                <span class="sr-only">Loading...</span>
+              </div>
+            </ng-container>
+  
+            <ng-container *ngSwitchDefault>
+  
+            </ng-container>
+          </ng-container>
+        </app-box>
+  
+        <app-box title="Total Builds" [value]="builds[0]?.id">
+          <svg class="w-8 h-8 text-gray-700 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 15v4m6-6v6m6-4v4m6-6v6M3 11l6-5 6 5 5.5-5.5" />
+          </svg>
+  
+        </app-box>
+        <div class="flex justify-center col-span-full">
+          <button type="button" (click)="getBuildLogs(builds[0]?.id)" data-modal-target="console-log-modal" data-modal-toggle="console-log-modal" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+            consoles logs
+          </button>
+        </div>
+        <app-box-chart title="Builds Status">
+          <section class="md:w-3/5 mx-auto">
+            <app-pie-chart [data]="builds"></app-pie-chart>
+          </section>
+        </app-box-chart>
+  
+        <div class="flex flex-col space-y-4 justify-between">
+          <app-box title="The top difficult stage">
+            <section class="text-center">
+              <p class="text-xl font-semibold tracking-tight  text-gray-700 dark:text-gray-400">
+                {{difficultStage['name']}}
+              </p>
+              <p class="text-base tracking-tight  text-gray-700 dark:text-gray-400">
+                this stage failed {{ difficultStage['value'] }} builds
+              </p>
+            </section>
+          </app-box>
+          <app-box title="The top longer stage">
+            <section class="text-center">
+              <p class="text-xl font-semibold tracking-tight  text-gray-700 dark:text-gray-400">
+                {{longerStage['name']}}
+              </p>
+              <p class="text-base tracking-tight  text-gray-700 dark:text-gray-400">
+                this stage ran in {{ longerStage['value'] }} ms
+              </p>
+            </section>
+          </app-box>
+        </div>
+  
+        <app-box-chart title="Builds Duration" class="col-span-full">
+          <app-line-chart [data]="builds"></app-line-chart>
+        </app-box-chart>
+      </div>
+  
+      <app-sonar></app-sonar>
+    </div>
+  
+  
+    <!--Build Details-->
+    <div id="Builds_Details" class="p-5 rounded-lg" *ngIf="selectedBuild"
+    [ngClass]="{'bg-green-300 dark:bg-green-900': selectedBuild.status=='success', 'bg-red-300 dark:bg-red-900': selectedBuild.status=='failed', 'bg-orange-300 dark:bg-orange-900': selectedBuild.status=='unstable', 'bg-gray-300 dark:bg-gray-900': selectedBuild.status=='aborted', 'bg-blue-300 dark:bg-blue-900': selectedBuild.status=='in_progress'}">
+      <div class="flex justify-between items-center">
+        <div class="flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 md:space-x-9 my-12">
+          <h3 class=" text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            {{'build details' | uppercase}}
+          </h3>
+          <section>
+            <app-select [options]="buildsOptions" [selectedValue]="selectedValue" (onSelectBuild)="onSelectBuild($event)"></app-select>
+          </section>
+        </div>
+        <p class="text-gray-900 dark:text-white">{{ selectedBuild.startDate| date: 'medium' }}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-y-8 md:gap-x-16 ">
+  
+        <app-box title="Build Status">
+          <p class="text-2xl font-semibold tracking-tight"
+          [ngClass]="{'text-green-500 dark:text-green-400': selectedBuild.status=='success', 'text-red-500 dark:text-red-400': selectedBuild.status=='failed', 'text-orange-500 dark:text-orange-400': selectedBuild.status=='unstable', 'text-gray-500 dark:text-gray-400': selectedBuild.status=='aborted', 'text-blue-500 dark:text-blue-400': selectedBuild.status=='in_progress'}">
+            {{selectedBuild.status| uppercase}}
+          </p>
+          <ng-container [ngSwitch]="selectedBuild.status">
+            <ng-container *ngSwitchCase="'success'">
+              <svg class="w-8 h-8 text-green-500 dark:text-green-400" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M1 5.917 5.724 10.5 15 1.5" />
+              </svg>
+            </ng-container>
+  
+            <ng-container *ngSwitchCase="'failed'">
+              <svg class="w-8 h-8 text-red-500 dark:text-red-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M10 5 9 4V3m5 2 1-1V3m-3 6v11m0-11a5 5 0 0 1 5 5m-5-5a5 5 0 0 0-5 5m5-5a4.959 4.959 0 0 1 2.973 1H15V8a3 3 0 0 0-6 0v2h.027A4.959 4.959 0 0 1 12 9Zm-5 5H5m2 0v2a5 5 0 0 0 10 0v-2m2.025 0H17m-9.975 4H6a1 1 0 0 0-1 1v2m12-3h1.025a1 1 0 0 1 1 1v2M16 11h1a1 1 0 0 0 1-1V8m-9.975 3H7a1 1 0 0 1-1-1V8" />
+              </svg>
+            </ng-container>
+  
+            <ng-container *ngSwitchCase="'unstable'">
+              <svg class="w-8 h-8 text-orange-500 dark:text-orange-400" aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </ng-container>
+            <ng-container *ngSwitchCase="'aborted'">
+              <svg class="w-8 h-8 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                  d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+              </svg>
+            </ng-container>
+  
+            <ng-container *ngSwitchCase="'in_progress'">
+              <div role="status">
+                <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                  viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor" />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentFill" />
+                </svg>
+                <span class="sr-only">Loading...</span>
+              </div>
+            </ng-container>
+  
+            <ng-container *ngSwitchDefault>
+  
+            </ng-container>
+          </ng-container>
+        </app-box>
+  
+        <app-box title="Duration" [value]="selectedBuild.durationMillis+' ms'">
+          <svg class="w-8 h-8 text-gray-700 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+  
+        </app-box>
+  
+      </div>
+
+      <div class="mt-8 w-full flex justify-center">
+        <button type="button" (click)="getBuildLogs(selectedBuild.id)" data-modal-target="console-log-modal" data-modal-toggle="console-log-modal" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+          consoles logs
+        </button>
+        <div id="console-log-modal" tabindex="-1" aria-hidden="true" class="hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+          <div class="relative p-4 w-full max-w-4xl ">
+              <!-- Modal content -->
+              <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                  <!-- Modal header -->
+                  <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                      <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                          Console Logs
+                      </h3>
+                      <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="console-log-modal">
+                          <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                          </svg>
+                          <span class="sr-only">Close modal</span>
+                      </button>
+                  </div>
+                  <!-- Modal body -->
+                  <div class="p-4 md:p-5 space-y-4 max-h-[calc(75vh)] overflow-auto custom-scrollbar" >
+                      <pre *ngIf="!(isLogsLoading$ | async); else pageLoadingBlock" class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+                          {{logs}}
+                      </pre>
+                      
+                  </div>
+                  <!-- Modal footer -->
+                  <div class="flex items-center justify-end p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                      <button data-modal-hide="console-log-modal" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Close</button>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mx-auto w-full md:w-2/3 mt-8">
+        <app-box title="Stages">
+          <app-stages-stepper [stages]=" selectedBuild.stages"></app-stages-stepper>
+        </app-box>
+      </div>
+  
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #pageLoadingBlock>
+    
+  <div class="h-96 flex items-center justify-center">
+    <div role="status" class=" flex justify-center">
+      <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+          <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+      </svg>
+      <span class="sr-only">Loading...</span>
+  </div>
+  </div>
+
+</ng-template>
+
+

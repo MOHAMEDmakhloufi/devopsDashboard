@@ -5,6 +5,7 @@ import { OptionObj } from './_interfaces/OptionObj';
 import { JenkinsService } from './_services';
 import { Build } from './_interfaces/Build';
 import { BehaviorSubject } from 'rxjs';
+import { SeleniumTest, TestCase } from './_interfaces/TestCase';
 
 
 @Component({
@@ -12,8 +13,7 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent  {
-  /*
+export class AppComponent implements OnInit {
   private isPageLoading = new BehaviorSubject<boolean>(true);
   isPageLoading$ = this.isPageLoading.asObservable();
   difficultStage: Object= {name: "nothing", value: 0};
@@ -21,6 +21,10 @@ export class AppComponent  {
   status : string = 'in_progress';
   builds: Build[];
   selectedBuild : Build;
+  generalLogs: string;
+  selectedLogs: string;
+  lastSeleniumTest: SeleniumTest;
+  selectedSeleniumTest: SeleniumTest;
   logs: string;
   private isLogsLoading = new BehaviorSubject<boolean>(true);
   isLogsLoading$ = this.isLogsLoading.asObservable();
@@ -41,6 +45,7 @@ export class AppComponent  {
           this.getLongerStage();
           this.getBuildsOptions();
           this.selectedBuild = response[0]
+          this.getBuildLogs(this.selectedBuild.id)
           this.status = response[0]?.status;
           this.isPageLoading.next(false);
           setTimeout(() => {
@@ -94,6 +99,17 @@ export class AppComponent  {
       next: (response)=> {
         
         this.logs = response;
+        if(buildId == this.selectedBuild.id){
+          this.selectedLogs = response;
+          this.selectedSeleniumTest =this.getSeleniumTestInfo(this.selectedLogs)
+        }
+          
+        if(buildId == this.builds[0].id  ){
+          this.generalLogs = response;
+          this.lastSeleniumTest =this.getSeleniumTestInfo(this.generalLogs)
+        }
+          
+
         this.isLogsLoading.next(false);
       },
       error: (e)=>{
@@ -147,5 +163,64 @@ export class AppComponent  {
     
     
     
-  }*/
+  }
+
+  getSeleniumTestInfo(log: string){
+    const seleniumTest = {} as SeleniumTest;
+
+    const lines = log.trim().split('\n');
+    const totalTestsLine = lines.find(line => line.startsWith('Total Selenium Tests :'));
+    if (!totalTestsLine) {
+        console.error('Failed to parse Jenkins log: Total Tests line not found.');
+        return null;
+    }
+    
+    const totalTests = parseInt(totalTestsLine.split(':')[1].trim());
+
+    const passedTestsLine = lines.find(line => line.startsWith('Total Selenium Passed Tests :'));
+    if (!passedTestsLine) {
+        console.error('Failed to parse Jenkins log: Total Passed Tests line not found.');
+        return null;
+    }
+    const countPassedTests = parseInt(passedTestsLine.split(':')[1].trim());
+    seleniumTest.totalPassedTest = countPassedTests
+    const testStatus = lines.find(line => line.startsWith('Exception: Selenium Test Stage Was Failed'));
+    seleniumTest.status = !testStatus
+    const failedTestsLine = lines.find(line => line.startsWith('Total Selenium Failed Tests :'));
+    if (!failedTestsLine) {
+        console.error('Failed to parse Jenkins log: Total Failed Tests line not found.');
+        return null;
+    }
+    const countFailedTests = parseInt(failedTestsLine.split(':')[1].trim());
+    seleniumTest.totalFailedTest = countFailedTests
+
+    const testCases: TestCase[] = [];
+
+    for (let i = 0; i < totalTests; i++) {
+        const testLine = lines.find(line => line.startsWith(`Test Selenium ${i + 1} :`));
+        if (!testLine) {
+            
+            return null;
+        }
+
+        const statusMatch = testLine.match(/(Passed|Failed)/);
+        if (!statusMatch) {
+            
+            return null;
+        }
+        const status = statusMatch[1] === 'Passed';
+
+        const testMatch = testLine.match(/<([^>]*)>/);
+        if (!testMatch) {
+            
+            return null;
+        }
+        const test = testMatch[1].trim();
+
+        testCases.push({ status, test });
+    }
+    seleniumTest.testCase = testCases;
+    return seleniumTest;
+
+  }
 }
