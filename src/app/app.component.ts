@@ -12,7 +12,8 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent  {
+  /*
   private isPageLoading = new BehaviorSubject<boolean>(true);
   isPageLoading$ = this.isPageLoading.asObservable();
   difficultStage: Object= {name: "nothing", value: 0};
@@ -146,5 +147,5 @@ export class AppComponent implements OnInit {
     
     
     
-  }
+  }*/
 }
