@@ -70,7 +70,7 @@ def display_test_cases(test_cases ):
         print(f'Test {ind+1} : { "Passed" if test["status"] else "Failed" } <{test["test"]}>')
 
 if __name__ == '__main__':
-    with Monitoring("http://devops_dashboard:8081/" if len(sys.argv) >= 2 else"http://localhost:4200/", True) as m:
+    with Monitoring("https://www.python.org/" if len(sys.argv) >= 2 else"http://localhost:4200/", True) as m:
         testCases = []
         m.land_first_page()
         is_general_section_exist = m.is_element_exist(By.ID,value='GENERAL_INFORMATION')
