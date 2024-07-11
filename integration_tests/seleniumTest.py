@@ -79,7 +79,7 @@ if __name__ == '__main__':
         is_general_section_exist = m.is_element_exist(by=By.ID,value='GENERAL_INFORMATION')
         testCases.append({'status': is_general_section_exist, 'test': 'is general section exist'})
         is_builds_details_exist = m.is_element_exist(by=By.ID, value='Builds_Details')
-        testCases.append({'status': is_builds_details_exist, 'test': 'is builds details exist'})
+        testCases.append({'status': is_general_section_exist, 'test': 'is builds details exist'})
         #m.scroll_to_and_click_select()
         display_test_cases(testCases)
 

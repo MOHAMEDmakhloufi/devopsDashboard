@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
         }else{
           alert("There aren't any build !")
         }
-        //setInterval(()=>{this.changeDetection()}, 5000)
+        //setInterval(()=>{this.changeDetection()}, 10000)
       },
       error: (e)=>{
        // this.isPageLoading.next(false);

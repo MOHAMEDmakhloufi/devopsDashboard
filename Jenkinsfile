@@ -6,15 +6,15 @@ pipeline {
     stages {
         stage("Sonarqube analysis") {
             steps {
-                /*
+                
                 nodejs(nodeJSInstallationName: 'nodejs') {
                     sh "npm install"
                     withSonarQubeEnv(installationName:'sonarQube'){
                         sh "npm run sonar"
                     }
                 }
-                */
-                echo "hello sonar"
+                
+                //echo "hello sonar"
             }
         }
         stage("Build Docker Image") {
