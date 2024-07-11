@@ -57,16 +57,17 @@ pipeline {
               }
           }
 
-        stage("Cleaning Up ...") {
-                
-              steps {
-                script {
-                  sh "docker rmi devops_dashboard:latest"
-                  sh "docker stop devops_dashboard"
-                  sh "docker rm devops_dashboard"
-                }
+        
+        post {
+          always {
+              echo 'Cleaning up...'
+              script {
+                sh "docker rmi devops_dashboard:latest"
+                sh "docker stop devops_dashboard"
+                sh "docker rm devops_dashboard"
               }
           }
+        }
       
 
     }
