@@ -28,7 +28,7 @@
             <div>
                 <p *ngFor="let test of seleniumTest.testCase; let i = index"
                 [ngClass]="{'text-green-500 dark:text-green-400': test.status, 'text-red-500 dark:text-red-400': !test.status}"
-                    class="text-2xl font-semibold tracking-tight " >
+                    class="text-sm font-semibold tracking-tight mt-4" >
                     {{'Test '+i +' : ' + test.status + ' ' + test.test}} </p>
             </div>
         </app-box>

@@ -32,7 +32,7 @@ class Monitoring(webdriver.Chrome):
             options.add_experimental_option("detach", True)
             super(Monitoring, self).__init__(options=options)
             self.maximize_window()
-        self.implicitly_wait(6)
+        self.implicitly_wait(10)
 
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -76,9 +76,9 @@ if __name__ == '__main__':
     with Monitoring("http://devops_dashboard" if len(sys.argv) >= 2 else"http://localhost:4200/", True) as m:
         testCases = []
         m.land_first_page()
-        is_general_section_exist = m.is_element_exist(By.ID,value='GENERAL_INFORMATION')
+        is_general_section_exist = m.is_element_exist(by=By.ID,value='GENERAL_INFORMATION')
         testCases.append({'status': is_general_section_exist, 'test': 'is general section exist'})
-        is_builds_details_exist = m.is_element_exist(By.ID, value='Builds_Details')
+        is_builds_details_exist = m.is_element_exist(by=By.ID, value='Builds_Details')
         testCases.append({'status': is_builds_details_exist, 'test': 'is builds details exist'})
         #m.scroll_to_and_click_select()
         display_test_cases(testCases)
