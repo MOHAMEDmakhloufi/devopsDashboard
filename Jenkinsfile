@@ -1,74 +1,67 @@
 pipeline {
     agent any
     parameters {
-      booleanParam(name: 'DeployToProd', defaultValue: false, description : 'Do you want to deploy this app to production?')
+        booleanParam(name: 'DeployToProd', defaultValue: false, description: 'Do you want to deploy this app to production?')
     }
     stages {
-        stage("Sonarqube analysis ") {
+        stage("Sonarqube analysis") {
             steps {
-              /*
+                /*
                 nodejs(nodeJSInstallationName: 'nodejs') {
                     sh "npm install"
                     withSonarQubeEnv(installationName:'sonarQube'){
                         sh "npm run sonar"
                     }
-                    
                 }
-              */
-              
-              echo "hello sonar" 
+                */
+                echo "hello sonar"
             }
         }
         stage("Build Docker Image") {
-              steps {
+            steps {
                 script {
-                  
-                  sh "docker build -t devops_dashboard:latest ."
+                    sh "docker build -t devops_dashboard:latest ."
                 }
-              }
-          }
-      stage("Deploy To Pre-Prod") {
-              steps {
+            }
+        }
+        stage("Deploy To Pre-Prod") {
+            steps {
                 script {
-                  sh "docker run -d --name devops_dashboard --network dashboard_network -p 8080:8080 devops_dashboard:latest"
+                    sh "docker run -d --name devops_dashboard --network dashboard_network -p 8080:8080 devops_dashboard:latest"
                 }
-              }
-          }
+            }
+        }
         stage("Selenium Tests") {
-              steps {
+            steps {
                 script {
-                  sh "docker run --network dashboard_network --rm -d --name selenium-test-container selenium-test sleep infinity"
-                  sh "docker cp ${WORKSPACE}/integration_tests/seleniumTest.py selenium-test-container:/usr/app/seleniumTest.py"
-                  sh "docker exec selenium-test-container python /usr/app/seleniumTest.py chrome"
-                  sh "docker stop selenium-test-container"
+                    sh "docker run --network dashboard_network --rm -d --name selenium-test-container selenium-test sleep infinity"
+                    sh "docker cp ${WORKSPACE}/integration_tests/seleniumTest.py selenium-test-container:/usr/app/seleniumTest.py"
+                    sh "docker exec selenium-test-container python /usr/app/seleniumTest.py chrome"
+                    sh "docker stop selenium-test-container"
                 }
-              }
-          }
+            }
+        }
         stage("Deploy To Prod") {
-                when {
-                  expression {
+            when {
+                expression {
                     params.DeployToProd == true
-                  }
                 }
-              steps {
+            }
+            steps {
                 script {
-                  echo "hello Deploy to Prod"
+                    echo "hello Deploy to Prod"
                 }
-              }
-          }
-
-        
-        post {
-          always {
-              echo 'Cleaning up...'
-              script {
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Cleaning up...'
+            script {
                 sh "docker rmi devops_dashboard:latest"
                 sh "docker stop devops_dashboard"
                 sh "docker rm devops_dashboard"
-              }
-          }
+            }
         }
-      
-
     }
 }
